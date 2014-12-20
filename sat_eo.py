@@ -46,6 +46,10 @@ def calc_local_fitness(assignment, pos_constraints, neg_constraints):
             pass
     return fitness
 
+def flip_eo(fitness, assignment, tau=1.5):
+    pass
+    return assignment
+
 if __name__ == "__main__":
     pos_constraints, neg_constraints, num_vars, num_clauses = read_file("frb30-15-cnf/frb30-15-1.cnf")
     #print "file read..."
