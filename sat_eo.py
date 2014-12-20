@@ -41,13 +41,13 @@ def calc_local_fitness(assignment, pos_constraints, neg_constraints):
     fitness = np.zeros_like(assignment)
     for x in xrange(assignment.size):
         for y in pos_constraints[x]:
-            pass
+            pass ############
         for y in neg_constraints[x]:
-            pass
+            pass ############
     return fitness
 
 def flip_eo(fitness, assignment, tau=1.5):
-    pass
+    pass ############
     return assignment
 
 if __name__ == "__main__":
