@@ -39,27 +39,32 @@ def read_file(filename):
 def random_init(num_vars):
     return npr.random(num_vars) > 0.5
 
+def calc_hypothetical_fitness(hypothetical, pos_constraints, neg_constraints):
+    fitness = 0
+    for x in xrange(hypothetical.size):
+        for y in pos_constraints[x]:
+            if hypothetical[x-1] != hypothetical[y-1]:
+                fitness -= 1
+        for y in neg_constraints[x]:
+            if hypothetical[x-1] == hypothetical[y-1]:
+                fitness -= 1
+    return fitness
+
 def calc_local_fitness(assignment, pos_constraints, neg_constraints):
     fitness = np.zeros_like(assignment, dtype=np.int32)
     for x in xrange(assignment.size):
-        for y in pos_constraints[x]:
-            if assignment[x-1] == assignment[y-1]:
-                fitness[x] += 1
-        for y in neg_constraints[x]:
-            if assignment[x-1] != assignment[y-1]:
-                fitness[x] += 1
+        assignment[x] = not assignment[x]
+        fitness[x] = calc_hypothetical_fitness(assignment, pos_constraints, neg_constraints)
+        assignment[x] = not assignment[x]
     return fitness
-
-def get_kth_highest_arg(ls, k):
-    return sorted(enumerate(ls), key=operator.itemgetter(1), reverse=True)[k][0]
 
 def flip_eo(fitness, soln, tau=1.5):
     k = len(soln)
     while k > len(soln)-1:
         k = int(np.random.pareto(tau))
-    worst_city = get_kth_highest_arg(fitness, k)
+    worst = fitness.argsort()[k]
     new_soln = soln.copy() #deep copy
-    new_soln[worst_city] = not new_soln[worst_city]
+    new_soln[worst] = not new_soln[worst]
     return new_soln
 
 if __name__ == "__main__":
@@ -69,9 +74,18 @@ if __name__ == "__main__":
     #print "file read..."
     init_soln = random_init(num_vars)
     soln = init_soln
-    fitness = np.zeros_like(soln)
-    for i in xrange(100):
+    best_soln = init_soln
+    fitness = np.zeros_like(soln, dtype=np.int32)
+    best_fitness = float("inf")
+    dim = 20
+    for i in xrange(dim):
+        if i % (dim // 10) == 0:
+            print "i / dim: ", i, " / ", dim
         fitness = calc_local_fitness(soln, pos_constraints, neg_constraints)
         soln = flip_eo(fitness, soln)
-    print "soln: ", soln
-    print "fitness: ", fitness
+        if fitness.sum() < best_fitness:
+            best_fitness = fitness.sum()
+            best_soln = soln
+    print "soln: ", best_soln
+    print "fitness: ", best_fitness
+    print "local fitness: ", calc_local_fitness(best_soln, pos_constraints, neg_constraints)
