@@ -56,6 +56,7 @@ def calc_local_fitness(assignment, pos_constraints, neg_constraints):
         assignment[x] = not assignment[x]
         fitness[x] = calc_hypothetical_fitness(assignment, pos_constraints, neg_constraints)
         assignment[x] = not assignment[x]
+    fitness -= calc_hypothetical_fitness(assignment, pos_constraints, neg_constraints)
     return fitness
 
 def flip_eo(fitness, soln, tau=1.5):
