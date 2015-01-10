@@ -1,23 +1,24 @@
 using PyPlot
 using Distributions
 
-function read_file(filename):
+function parse_cnf(filename):
   pos_constraints = (String => Any)[]
   neg_constraints = (String => Any)[]
   num_vars = -1
   num_clauses = -1
   f = open(filename)
-  for line in f ###
+  for line in eachline(f)
     if line[1] == "c"
       continue
     end
     if line[1] == "p":
-      p, cnf, _vars, _clauses = line.split() #####
-      num_vars = int(_vars) #####
-      num_clauses = int(_clauses) ####
+      split_line = split(line)
+      p, cnf, _vars, _clauses = split_line[1], split_line[2], split_line[3], split_line[4]
+      num_vars = parseint(_vars)
+      num_clauses = parseint(_clauses)
       continue
     end
-    clause = map(int, line.split()) #####
+    clause = map(parseint, line.split())
     for var in clause
       if var > 0
         pos_constraints[var].update(set(clause)) ####
@@ -49,4 +50,4 @@ end
 
 ### main program begins
 
-pos_constraints, neg_constraints, num_vars, num_clauses = read_file("frb30-15-cnf/frb30-15-1.cnf")
+pos_constraints, neg_constraints, num_vars, num_clauses = parse_cnf("frb30-15-cnf/frb30-15-1.cnf")
