@@ -2,8 +2,8 @@ using PyPlot
 using Distributions
 
 function read_file(filename):
-  pos_constraints = collections.defaultdict(set)
-  neg_constraints = collections.defaultdict(set)
+  pos_constraints = (String => Any)[]
+  neg_constraints = (String => Any)[]
   num_vars = -1
   num_clauses = -1
   f = open("frb30-15-cnf/frb30-15-1.cnf")
