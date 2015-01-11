@@ -1,49 +1,49 @@
 using PyPlot
 using Distributions
 
-function parse_cnf(filename):
-  pos_constraints = (Int => Int)[]
-  neg_constraints = (Int => Int)[]
+function parse_cnf(filename)
+  pos_constraints = (Int => Set)[]
+  neg_constraints = (Int => Set)[]
   num_vars = -1
   num_clauses = -1
   f = open(filename)
   for line in eachline(f)
-    if line[1] == "c"
+    if line[1] == 'c'
       continue
     end
-    if line[1] == "p":
+    if line[1] == 'p'
       split_line = split(line)
-      p, cnf, _vars, _clauses = split_line[1], split_line[2], split_line[3], split_line[4]
+      p, cnf, _vars, _clauses = split_line
       num_vars = parseint(_vars)
       num_clauses = parseint(_clauses)
       continue
     end
-    clause = map(parseint, line.split())
-    set_clause = Set(clause)
+    clause = map(parseint, split(line))
+    clause_set = Set(clause)
     for var in clause
       if var > 0
-        pos_constraints[var].update(set(clause)) ####
+        pos_constraints[var] = clause_set
       end
       if var < 0
-        neg_constraints[var].update(set(clause)) #####
+        neg_constraints[var] = clause_set
       end
     end
   end
   for key in keys(pos_constraints)
-    val = get(pos_constraints, key)
-    if haskey(val, key)
+    val = get(pos_constraints, key, Set)
+    if haskey(pos_constraints, key)
       delete!(val, key)
     end
-    if haskey(val, 0)
+    if haskey(pos_constraints, 0)
       delete!(val, 0)
     end
   end
   for key in neg_constraints
-    val = get(pos_constraints, key)
-    if haskey(val, key)
+    val = get(pos_constraints, key, Set)
+    if haskey(pos_constraints, key)
       delete!(val, key)
     end
-    if haskey(val, 0)
+    if haskey(pos_constraints, 0)
       delete!(val, 0)
     end
   end
