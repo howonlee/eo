@@ -51,15 +51,47 @@ function parse_cnf(filename)
   return pos_constraints, neg_constraints, num_vars, num_clauses
 end
 
+function random_init(num_vars)
+  return npr.random(num_vars) > 0.5
+end
+
 function flip_eo(fitness, soln, tau=1.4)
-    k = length(soln)
-    while k > length(soln)-1:
-      k = int(np.random.pareto(tau)) ####
+  k = length(soln)
+  while k > length(soln)-1:
+    k = int(np.random.pareto(tau)) ####
+  end
+  worst = fitness.argsort()[k] ####
+  new_soln = soln.copy() #### do a deep copy
+  new_soln[worst] = !new_soln[worst] ####
+  new_soln
+end
+
+function calc_hypothetical_fitness(hypothetical, pos_constraints, neg_constraints)
+  fitness = 0
+  for x in xrange(hypothetical.size):
+    for y in pos_constraints[x]:
+      if hypothetical[x-1] != hypothetical[y-1]:
+        fitness -= 1
+      end
     end
-    worst = fitness.argsort()[k] ####
-    new_soln = soln.copy() #### do a deep copy
-    new_soln[worst] = !new_soln[worst] ####
-    new_soln
+    for y in neg_constraints[x]:
+      if hypothetical[x-1] == hypothetical[y-1]:
+        fitness -= 1
+      end
+    end
+  end
+  return fitness
+end
+
+function calc_local_fitness(assignment, pos_constraints, neg_constraints)
+  fitness = np.zeros_like(assignment, dtype=np.int32)
+  for x in xrange(assignment.size):
+    assignment[x] = not assignment[x]
+    fitness[x] = calc_hypothetical_fitness(assignment, pos_constraints, neg_constraints)
+    assignment[x] = not assignment[x]
+  end
+  fitness -= calc_hypothetical_fitness(assignment, pos_constraints, neg_constraints)
+  fitness
 end
 
 ### main program begins
