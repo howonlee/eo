@@ -51,6 +51,17 @@ function parse_cnf(filename)
   return pos_constraints, neg_constraints, num_vars, num_clauses
 end
 
+function flip_eo(fitness, soln, tau=1.4)
+    k = length(soln)
+    while k > length(soln)-1:
+      k = int(np.random.pareto(tau)) ####
+    end
+    worst = fitness.argsort()[k] ####
+    new_soln = soln.copy() #### do a deep copy
+    new_soln[worst] = !new_soln[worst] ####
+    new_soln
+end
+
 ### main program begins
 
 pos_constraints, neg_constraints, num_vars, num_clauses = parse_cnf("frb30-15-cnf/frb30-15-1.cnf")
