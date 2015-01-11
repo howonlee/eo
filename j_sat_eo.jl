@@ -67,6 +67,7 @@ function flip_eo(fitness, soln, tau=1.4)
 end
 
 function calc_hypothetical_fitness(hypothetical, pos_constraints, neg_constraints)
+  #####################
   fitness = 0
   for x in xrange(hypothetical.size):
     for y in pos_constraints[x]:
@@ -84,6 +85,7 @@ function calc_hypothetical_fitness(hypothetical, pos_constraints, neg_constraint
 end
 
 function calc_local_fitness(assignment, pos_constraints, neg_constraints)
+  #####################
   fitness = np.zeros_like(assignment, dtype=np.int32)
   for x in xrange(assignment.size):
     assignment[x] = not assignment[x]
