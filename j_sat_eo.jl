@@ -87,12 +87,9 @@ end
 function calc_local_fitness(assignment, pos_constraints, neg_constraints)
   #####################
   fitness = np.zeros_like(assignment, dtype=np.int32)
-  for x in xrange(assignment.size):
-    assignment[x] = not assignment[x]
-    fitness[x] = calc_hypothetical_fitness(assignment, pos_constraints, neg_constraints)
-    assignment[x] = not assignment[x]
+  for x in (the damn thing):
+    stuff
   end
-  fitness -= calc_hypothetical_fitness(assignment, pos_constraints, neg_constraints)
   fitness
 end
 
